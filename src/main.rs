@@ -1,5 +1,4 @@
 use std::io;
-use color_print::cprint;
 
 #[derive(Clone)]
 struct Tile {
@@ -23,10 +22,10 @@ fn print_grid(board: Board) {
         for (tile_index, tile) in row.iter().enumerate() {
             let color = if (row_index / board.region_size + tile_index / board.region_size) % 2 == 0 {"\u{1b}[34m"} else {"\u{1b}[33m"};
             if tile.is_set == true {
-                cprint!("{}{}", color,  tile.number);
+                print!("{}{}", color,  tile.number);
             }
             else {
-                cprint!("{}#", color);
+                print!("{}#", color);
             }
         }
         println!("");
