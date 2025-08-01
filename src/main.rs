@@ -6,7 +6,13 @@ struct Tile {
     number: usize,
 }
 
+struct Cursor {
+    x: usize,
+    y: usize,
+}
+
 struct Board {
+    cursor: Cursor,
     size: usize,
     region_size: usize,
     grid: Vec<Vec<Tile>>,
@@ -20,12 +26,21 @@ fn is_perfect_square(number: usize) -> bool {
 fn print_grid(board: Board) {
     for (row_index, row) in board.grid.iter().enumerate() {
         for (tile_index, tile) in row.iter().enumerate() {
-            let color = if (row_index / board.region_size + tile_index / board.region_size) % 2 == 0 {"\u{1b}[34m"} else {"\u{1b}[33m"};
+            let color = if row_index == board.cursor.y && tile_index == board.cursor.x {
+                "\u{1b}[37m\u{1b}[45m"
+            }
+            else if (row_index / board.region_size + tile_index / board.region_size) % 2 == 0 {
+                "\u{1b}[0m\u{1b}[34m"
+            } 
+            else {
+                "\u{1b}[0m\u{1b}[33m"
+            };
+            
             if tile.is_set == true {
-                print!("{}{}", color,  tile.number);
+                print!("{}{} ", color,  tile.number);
             }
             else {
-                print!("{}#", color);
+                print!("{}▢ ", color);
             }
         }
         println!("");
@@ -35,12 +50,16 @@ fn print_grid(board: Board) {
 fn start_grid(size: usize) {
 
     let mut board = Board {
+        cursor: Cursor {x: 0, y: 0},
         size: size,
         region_size: f32::sqrt(size as f32).floor() as usize,
         grid: vec![vec![Tile { is_set: false, number: 0 }; size]; size],
     };
 
-   print_grid(board);
+    loop {
+        print_grid(board);
+        get_input();
+    }
 }
 
 fn main() {
