@@ -23,7 +23,7 @@ fn is_perfect_square(number: usize) -> bool {
     return sqrt * sqrt == number as f32;
 }
 
-fn print_grid(board: Board) {
+fn print_grid(board: &Board) {
     for (row_index, row) in board.grid.iter().enumerate() {
         for (tile_index, tile) in row.iter().enumerate() {
             let color = if row_index == board.cursor.y && tile_index == board.cursor.x {
@@ -47,6 +47,39 @@ fn print_grid(board: Board) {
     }
 }
 
+fn get_input(board: &mut Board) {
+    let mut input_buffer = String::new();
+
+    println!("WASD to move cursor (yeah, i know it's sloppy :p)");
+    io::stdin().read_line(&mut input_buffer).expect("Failed to read from stdin");
+
+    let trimmed = input_buffer.trim();
+    match trimmed {
+    
+        "w" => {
+            if board.cursor.y > 0 {
+                board.cursor.y -= 1;
+            }
+        },
+        "s" => {
+            if board.cursor.y < board.size {
+                board.cursor.y += 1;
+            }
+        },
+        "a" => {
+            if board.cursor.y > 0 {
+                board.cursor.x -= 1;
+            }
+        },
+        "d" => {
+            if board.cursor.y < board.size {
+                board.cursor.x += 1;
+            }
+        },
+        _ => println!("Bad input :("),
+    }
+}
+
 fn start_grid(size: usize) {
 
     let mut board = Board {
@@ -57,18 +90,18 @@ fn start_grid(size: usize) {
     };
 
     loop {
-        print_grid(board);
-        get_input();
+        print_grid(&board);
+        get_input(&mut board);
     }
 }
 
 fn main() {
-    let mut buffer = String::new();
+    let mut input_buffer = String::new();
 
     println!("Write the size of the grid (9x9 is default):");
-    io::stdin().read_line(&mut buffer).expect("Failed to read from stdin");
+    io::stdin().read_line(&mut input_buffer).expect("Failed to read from stdin");
 
-    let trimmed = buffer.trim();
+    let trimmed = input_buffer.trim();
     match trimmed.parse::<usize>() {
         Ok(size) => {
             if is_perfect_square(size) {
